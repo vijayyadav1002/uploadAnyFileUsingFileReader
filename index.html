@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>File Reader!!</title>
+</head>
+<body>
+<input type="file" id="file">
+<div id="dataDiv"></div>						
+<script>
+
+	var inputFile = document.querySelector("#file"),
+		dataDiv = document.querySelector("#dataDiv"),
+		reader = new FileReader()
+	;
+	XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
+	 function byteValue(x) {
+	     return x.charCodeAt(0) & 0xff;
+	 }
+	 var ords = Array.prototype.map.call(datastr, byteValue);
+	 var ui8a = new Uint8Array(ords);
+	 this.send(ui8a.buffer);
+ 	}
+
+ 	var xhr = new XMLHttpRequest();
+
+	inputFile.addEventListener("change", startReading, false);
+
+	reader.onload = function(e) {
+  		var rawData = reader.result;
+  		dataDiv.innerText = rawData;
+  		xhr.open("post", "readFile.php", true);
+  		xhr.sendAsBinary(rawData);
+	}
+
+	function startReading(e) {
+		var file = inputFile.files[0];
+		reader.readAsBinaryString(file);
+	}
+</script>
+</body>
+</html>
